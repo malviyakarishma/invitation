@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Expose base path to client components (QR image, etc.)
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   ...(basePath
     ? {
         basePath,

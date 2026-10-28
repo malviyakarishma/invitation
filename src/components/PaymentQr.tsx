@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
 import { PAYMENT, buildUpiUri } from "@/lib/messages";
@@ -12,6 +11,12 @@ type PaymentQrProps = {
   showLabel?: boolean;
 };
 
+function assetPath(path: string) {
+  const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${normalized}`;
+}
+
 export function PaymentQr({
   size = 148,
   light = true,
@@ -20,6 +25,7 @@ export function PaymentQr({
   const upiUri = buildUpiUri();
   const [imageFailed, setImageFailed] = useState(false);
   const useImage = !upiUri && !imageFailed;
+  const qrSrc = assetPath("/payment-qr.png");
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -42,15 +48,14 @@ export function PaymentQr({
             title="UPI payment QR code"
           />
         ) : useImage ? (
-          <Image
-            src="/payment-qr.png"
+          // eslint-disable-next-line @next/next/no-img-element -- static export + GitHub Pages basePath
+          <img
+            src={qrSrc}
             alt="UPI payment QR code"
             width={size}
             height={size}
             className="h-full w-full object-contain"
             onError={() => setImageFailed(true)}
-            unoptimized
-            priority
           />
         ) : (
           <div
@@ -59,8 +64,7 @@ export function PaymentQr({
           >
             <p className="font-display text-sm tracking-wide text-ink">QR</p>
             <p className="font-body text-[0.65rem] leading-snug text-ink/70">
-              Drop <span className="font-semibold">payment-qr.png</span> in{" "}
-              <span className="font-semibold">public/</span>
+              Payment QR couldn&apos;t load. Refresh or check the image path.
             </p>
           </div>
         )}
