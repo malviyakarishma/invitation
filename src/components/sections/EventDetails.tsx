@@ -74,7 +74,7 @@ function DesktopPass({ stamped, reduce }: { stamped: boolean; reduce: boolean })
         <div className="relative p-8 lg:p-10">
           <PassDetails />
           <p className="mt-6 font-editorial text-sm italic text-ink/55">
-            Scan the QR on the right to contribute
+            Scan the QR on the right to pay ₹600
           </p>
           <Stamp show={stamped} reduce={reduce} />
         </div>
@@ -169,7 +169,7 @@ function MobilePass({
         >
           <p className="font-display text-2xl text-mustard">CONTRIBUTE</p>
           <p className="mt-1 max-w-xs font-editorial text-sm italic text-cream/80">
-            Scan to send a little love our way
+            Scan to pay ₹600
           </p>
           <div className="mt-4">
             <PaymentQr size={140} light={false} showLabel />

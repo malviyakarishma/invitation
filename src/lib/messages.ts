@@ -23,16 +23,14 @@ export const EVENT = {
   mapsQuery: "B-10, Harbholenath Society",
 } as const;
 
-/** UPI payment — fill in your ID so the pass QR works. */
+/** UPI payment — QR is generated with this amount when scanned. */
 export const PAYMENT = {
-  /** e.g. yourname@oksbi — leave "" to use /public/payment-qr.png instead */
-  upiId: "",
-  payeeName: "SWIG Night",
+  upiId: "8849741801@kotakbank",
+  payeeName: "KARISHMA JITENDRA MALVIYA",
   note: "SWIG Diwali Night",
-  /** Optional fixed amount in INR, e.g. "500". Leave "" for open amount. */
-  amount: "",
-  /** Optional label under the QR */
-  label: "Scan to pay · UPI",
+  /** Fixed amount in INR shown in UPI apps when scanned */
+  amount: "600",
+  label: "Scan to pay · ₹600",
 } as const;
 
 export function buildUpiUri() {

@@ -71,6 +71,15 @@ export function PaymentQr({
       </div>
       {showLabel && (
         <>
+          {PAYMENT.amount ? (
+            <p
+              className={`font-display text-xl tracking-wide ${
+                light ? "text-ink" : "text-mustard"
+              }`}
+            >
+              ₹{PAYMENT.amount}
+            </p>
+          ) : null}
           <p
             className={`text-center font-body text-[0.65rem] font-bold uppercase tracking-[0.16em] sm:text-xs ${
               light ? "text-ink/75" : "text-cream/75"
@@ -78,15 +87,6 @@ export function PaymentQr({
           >
             {PAYMENT.label}
           </p>
-          {PAYMENT.upiId ? (
-            <p
-              className={`font-body text-xs ${
-                light ? "text-ink/80" : "text-mustard"
-              }`}
-            >
-              {PAYMENT.upiId}
-            </p>
-          ) : null}
         </>
       )}
     </div>
