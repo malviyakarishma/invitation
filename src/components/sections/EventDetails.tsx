@@ -81,7 +81,10 @@ function DesktopPass({ stamped, reduce }: { stamped: boolean; reduce: boolean })
 
         <div className="flex flex-col items-center justify-center gap-3 border-l-2 border-dashed border-ink/25 bg-mustard/35 px-5 py-8 lg:px-6">
           <p className="font-display text-xl tracking-wide text-ink">PAY</p>
-          <PaymentQr size={152} light showLabel />
+          <PaymentQr size={152} light showAmount showCaption={false} />
+          <p className="text-center font-body text-[0.65rem] font-bold uppercase tracking-[0.16em] text-ink/70">
+            UPI
+          </p>
         </div>
       </div>
 
@@ -97,7 +100,7 @@ function DesktopPass({ stamped, reduce }: { stamped: boolean; reduce: boolean })
   );
 }
 
-/** Mobile: flip the pass to reveal QR */
+/** Mobile: swap cards (not absolute 3D back) so QR never gets clipped */
 function MobilePass({
   stamped,
   flipped,
@@ -110,23 +113,15 @@ function MobilePass({
   onFlip: () => void;
 }) {
   return (
-    <div className="md:hidden" style={{ perspective: 1200 }}>
-      <motion.div
-        className="relative w-full"
-        style={{ transformStyle: "preserve-3d" }}
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={
-          reduce
-            ? { duration: 0 }
-            : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
-        }
-      >
-        {/* Front */}
-        <div
+    <div className="md:hidden">
+      {!flipped ? (
+        <motion.div
+          key="front"
+          initial={reduce ? false : { opacity: 0.6, rotateY: -12 }}
+          animate={{ opacity: 1, rotateY: 0 }}
+          transition={{ duration: 0.35 }}
           className="relative overflow-hidden bg-cream"
           style={{
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
             border: "3px solid #17121D",
             boxShadow: "5px 5px 0 #17121D",
             borderRadius: "16px 6px 16px 6px",
@@ -136,12 +131,12 @@ function MobilePass({
             type="button"
             className="focus-ring w-full cursor-pointer border-0 bg-transparent p-0 text-left"
             onClick={onFlip}
-            aria-label="Flip ticket to payment QR"
+            aria-label="Show payment QR"
           >
             <div className="p-5">
               <PassDetails />
               <p className="mt-4 font-editorial text-sm italic text-ink/60">
-                Tap to flip · payment QR on the back
+                Tap to show payment QR
               </p>
             </div>
             <div
@@ -151,38 +146,36 @@ function MobilePass({
               <span className="font-display text-4xl text-ink">SWIG</span>
             </div>
           </button>
-          <Stamp show={stamped && !flipped} reduce={reduce} />
-        </div>
-
-        {/* Back — QR */}
-        <div
-          className="absolute inset-0 flex flex-col items-center justify-center overflow-y-auto bg-ink px-4 py-5 text-center"
+          <Stamp show={stamped} reduce={reduce} />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="back"
+          initial={reduce ? false : { opacity: 0.6, rotateY: 12 }}
+          animate={{ opacity: 1, rotateY: 0 }}
+          transition={{ duration: 0.35 }}
+          className="flex flex-col items-center bg-ink px-4 py-5 text-center"
           style={{
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-            transform: "rotateY(180deg)",
             border: "3px solid #F4BD35",
             boxShadow: "5px 5px 0 #17121D",
             borderRadius: "16px 6px 16px 6px",
           }}
-          aria-hidden={!flipped}
         >
-          <p className="font-display text-2xl text-mustard">CONTRIBUTE</p>
-          <p className="mt-1 max-w-xs font-editorial text-sm italic text-cream/80">
-            Scan to pay ₹600
+          <p className="font-display text-xl tracking-wide text-mustard">
+            PAY ₹600
           </p>
-          <div className="mt-4">
-            <PaymentQr size={140} light={false} showLabel />
+          <div className="mt-3">
+            <PaymentQr
+              size={160}
+              light={false}
+              showAmount={false}
+              showCaption={false}
+            />
           </div>
-          {stamped && (
-            <div className="mt-3 rotate-[-8deg] rounded-full border-[3px] border-mustard px-3 py-1.5 font-display text-xs tracking-widest text-mustard">
-              VALID ✦ 08.11.26
-            </div>
-          )}
           <button
             type="button"
             onClick={onFlip}
-            className="focus-ring tap-bounce mt-4 inline-flex min-h-10 items-center bg-mustard px-4 py-2 font-display text-sm tracking-wide text-ink"
+            className="focus-ring tap-bounce mt-4 inline-flex min-h-10 w-full max-w-xs items-center justify-center bg-mustard px-4 py-2.5 font-display text-sm tracking-wide text-ink"
             style={{
               border: "2.5px solid #17121D",
               boxShadow: "3px 3px 0 #EC1678",
@@ -190,8 +183,8 @@ function MobilePass({
           >
             ← BACK TO PASS
           </button>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 }

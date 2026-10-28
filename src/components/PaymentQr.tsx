@@ -8,7 +8,9 @@ type PaymentQrProps = {
   size?: number;
   /** Compact label styling for the cream ticket panel */
   light?: boolean;
-  showLabel?: boolean;
+  showAmount?: boolean;
+  /** Extra caption under amount — keep off on mobile to avoid duplicate copy */
+  showCaption?: boolean;
 };
 
 function assetPath(path: string) {
@@ -20,7 +22,8 @@ function assetPath(path: string) {
 export function PaymentQr({
   size = 148,
   light = true,
-  showLabel = true,
+  showAmount = true,
+  showCaption = true,
 }: PaymentQrProps) {
   const upiUri = buildUpiUri();
   const [imageFailed, setImageFailed] = useState(false);
@@ -28,12 +31,12 @@ export function PaymentQr({
   const qrSrc = assetPath("/payment-qr.png");
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col items-center gap-1.5">
       <div
-        className="overflow-hidden rounded-md border-[3px] border-ink bg-white p-2"
+        className="overflow-hidden rounded-md border-[3px] border-ink bg-white p-1.5"
         style={{
-          width: size + 16,
-          height: size + 16,
+          width: size + 12,
+          height: size + 12,
           boxShadow: "3px 3px 0 #17121D",
         }}
       >
@@ -64,31 +67,29 @@ export function PaymentQr({
           >
             <p className="font-display text-sm tracking-wide text-ink">QR</p>
             <p className="font-body text-[0.65rem] leading-snug text-ink/70">
-              Payment QR couldn&apos;t load. Refresh or check the image path.
+              Payment QR couldn&apos;t load.
             </p>
           </div>
         )}
       </div>
-      {showLabel && (
-        <>
-          {PAYMENT.amount ? (
-            <p
-              className={`font-display text-xl tracking-wide ${
-                light ? "text-ink" : "text-mustard"
-              }`}
-            >
-              ₹{PAYMENT.amount}
-            </p>
-          ) : null}
-          <p
-            className={`text-center font-body text-[0.65rem] font-bold uppercase tracking-[0.16em] sm:text-xs ${
-              light ? "text-ink/75" : "text-cream/75"
-            }`}
-          >
-            {PAYMENT.label}
-          </p>
-        </>
-      )}
+      {showAmount && PAYMENT.amount ? (
+        <p
+          className={`font-display text-lg tracking-wide sm:text-xl ${
+            light ? "text-ink" : "text-mustard"
+          }`}
+        >
+          ₹{PAYMENT.amount}
+        </p>
+      ) : null}
+      {showCaption ? (
+        <p
+          className={`text-center font-body text-[0.65rem] font-bold uppercase tracking-[0.16em] sm:text-xs ${
+            light ? "text-ink/75" : "text-cream/75"
+          }`}
+        >
+          {PAYMENT.label}
+        </p>
+      ) : null}
     </div>
   );
 }
